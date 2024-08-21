@@ -1,14 +1,20 @@
 # Dockerfile
-FROM python:3.8-slim-buster
+FROM python:3.11-slim
 
+# Establece el directorio de trabajo en la imagen
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+# Copia el archivo de requisitos
+COPY requirements.txt .
 
-RUN pip3 install -r requirements.txt
+# Instala las dependencias
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copia el código de la aplicación
 COPY . .
 
-EXPOSE 5000
+# Expone el puerto en el que correrá FastAPI
+EXPOSE 8000
 
-CMD [ "python3", "app.py" ]
+# Comando para correr la aplicación
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
