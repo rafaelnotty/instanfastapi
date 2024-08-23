@@ -6,6 +6,7 @@ services:
     container_name: fastapi-server
     ports:
       - "8000:8000"
+    restart: always
     depends_on:
       - mongo
     networks:
@@ -20,6 +21,7 @@ services:
       - backend
     volumes:
       - mongo_data:/data/db
+    restart: always
 
 networks:
   backend:
