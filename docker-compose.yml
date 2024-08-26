@@ -6,6 +6,8 @@ services:
     container_name: fastapi-server
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app  # Monta el directorio actual en /app dentro del contenedor to reload auto
     restart: always
     depends_on:
       - mongo
