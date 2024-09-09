@@ -19,10 +19,26 @@ class SensorData(BaseModel):
 @app.post("/sensor-data/")
 async def create_sensor_data(data: SensorData):
     try:
-        result = collection.insert_one(data.dict())
+        # Convertir el objeto SensorData a un diccionario
+        sensor_data_dict = data.dict()
+        
+        # Insertar datos en MongoDB
+        result = collection.insert_one(sensor_data_dict)
+        
+        # Devolver el ID del documento insertado
         return {"status": "success", "id": str(result.inserted_id)}
+    
+    except DuplicateKeyError:
+        # Si ya existe un documento con la misma clave, lanzar error 400
+        raise HTTPException(status_code=400, detail="Sensor data already exists")
+    
+    except PyMongoError as e:
+        # Para cualquier otro error relacionado con MongoDB
+        raise HTTPException(status_code=500, detail=f"MongoDB Error: {str(e)}")
+    
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Error inserting data")
+        # Error genérico
+        raise HTTPException(status_code=500, detail="Unexpected error occurred")
 
 @app.get("/sensor-data/", response_model=List[SensorData])
 async def get_all_sensor_data():
